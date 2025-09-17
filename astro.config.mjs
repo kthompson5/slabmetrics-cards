@@ -2,7 +2,8 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 
 export default defineConfig({
-  output: 'static',       // full static export
-  site: 'https://slabmetrics.com', // for absolute OG URLs
+  output: 'static',
+  site: 'https://cards.slabmetrics.com', // or your actual domain
+  integrations: [react()],               // <-- THIS IS THE KEY LINE
   build: { format: 'directory' }
 });
