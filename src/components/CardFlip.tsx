@@ -1,46 +1,23 @@
 import React, { useRef, useState } from 'react';
 
-type Props = { front: string; back?: string };
-
-export default function CardFlip({ front, back }: Props) {
-  const [flipped, setFlipped] = useState(false);
-  const startX = useRef<number | null>(null);
-
-  function onTouchStart(e: React.TouchEvent) { startX.current = e.touches[0].clientX; }
-  function onTouchEnd(e: React.TouchEvent) {
-    if (startX.current == null) return;
-    const dx = e.changedTouches[0].clientX - startX.current;
-    if (Math.abs(dx) > 40 && back) setFlipped(dx < 0 ? true : false);
-    startX.current = null;
-  }
-
+export default function CardFlip({ front, back, frontThumb, backThumb }:{
+  front:string; back?:string; frontThumb?:string; backThumb?:string;
+}) {
+  const [flipped,setFlipped]=useState(false); const [zoom,setZoom]=useState(false);
+  const startX=useRef<number|null>(null);
+  function onTouchStart(e:React.TouchEvent){ startX.current=e.touches[0].clientX; }
+  function onTouchEnd(e:React.TouchEvent){ if(startX.current==null) return;
+    const dx=e.changedTouches[0].clientX - startX.current;
+    if(Math.abs(dx)>40 && back) setFlipped(dx<0 ? true : false); startX.current=null; }
+  const cur = flipped && back ? {src: zoom ? back : (backThumb||back), alt:'Card back'} : {src: zoom ? front : (frontThumb||front), alt:'Card front'};
   return (
-    <div
-      style={{
-        perspective: '1000px', width: 'min(420px, 90vw)', margin: '0 auto',
-        cursor: back ? 'pointer' : 'default'
-      }}
-      onClick={() => back && setFlipped(v => !v)}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-      aria-live="polite"
-    >
-      <div style={{
-        position:'relative', transformStyle:'preserve-3d', transition:'transform 600ms',
-        transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
-      }}>
-        <img src={front} alt="Card front" style={{
-          display:'block', backfaceVisibility:'hidden', width:'100%', borderRadius:12
-        }}/>
-        {back && (
-          <img src={back} alt="Card back" style={{
-            position:'absolute', inset:0, width:'100%', borderRadius:12,
-            transform:'rotateY(180deg)', backfaceVisibility:'hidden'
-          }}/>
-        )}
-      </div>
-      <div style={{ textAlign:'center', fontSize:12, marginTop:8, opacity:0.8 }}>
-        {back ? 'Tap or swipe to flip' : 'Back image not available'}
+    <div style={{display:'grid',gap:8, justifyItems:'center'}}>
+      <img src={cur.src} alt={cur.alt}
+        style={{width:'min(480px, 92vw)', borderRadius:12, cursor:'pointer'}}
+        onClick={()=> setZoom(z => !z)}
+        onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} />
+      <div style={{fontSize:12,opacity:.8}}>
+        {back ? 'Tap/click to zoom · Swipe or click to flip' : 'Tap/click to zoom'}
       </div>
     </div>
   );
