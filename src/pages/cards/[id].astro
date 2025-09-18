@@ -63,8 +63,8 @@ const jsonLd = productJsonLd(card, site);
         <div>
           <h3 style="margin:10px 0 6px 0">Front (80%)</h3>
           <div class="subgrid">
-  <MiniDial value={card.subgrades.front.surface} label="Surface" client:visible />
-  <MiniDial value={card.subgrades.front.centering} label="Centering" client:visible />
+  <MiniDial value={card.subgrades.front.surface} label="Surface" size={78} client:visible />
+<MiniDial value={card.subgrades.front.centering} label="Centering" size={78} client:visible />
   <div class="span-2">
     <CornersGrid values={card.subgrades.front.corners} client:visible />
   </div>
@@ -85,8 +85,8 @@ const jsonLd = productJsonLd(card, site);
         <div>
           <h3 style="margin:10px 0 6px 0">Back (20%)</h3>
          <div class="subgrid">
-  <MiniDial value={card.subgrades.back.surface} label="Surface" client:visible />
-  <MiniDial value={card.subgrades.back.centering} label="Centering" client:visible />
+  <MiniDial value={card.subgrades.back.surface} label="Surface" size={78} client:visible />
+<MiniDial value={card.subgrades.back.centering} label="Centering" size={78} client:visible />
   <div class="span-2">
     <CornersGrid values={card.subgrades.back.corners} client:visible />
   </div>
