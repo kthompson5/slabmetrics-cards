@@ -1,11 +1,17 @@
 ---
 import CardLayout from "../../layouts/CardLayout.astro";
 import GradeGauge from "../../components/GradeGauge.tsx";
-import SubgradeBars from "../../components/SubgradeBars.tsx";
-import TrendSpark from "../../components/TrendSpark.tsx";
+import MiniDial from "../../components/MiniDial.tsx";
+import CornersGrid from "../../components/CornersGrid.tsx";
+import EdgesCompass from "../../components/EdgesCompass.tsx";
 import CardFlip from "../../components/CardFlip.tsx";
+import DownloadButtons from "../../components/DownloadButtons.tsx";
+import RemarksReveal from "../../components/RemarksReveal.tsx";
+import CompareBars from "../../components/CompareBars.tsx";
+import WeightNote from "../../components/WeightNote.tsx";
 import { getAllCards, getCardById } from "../../utils/paths.ts";
-import QRCode from "qrcode";
+import { overallFromSubgrades } from "../../utils/grade.ts";
+import { makeOg, productJsonLd } from "../../utils/meta.ts";
 
 export async function getStaticPaths() {
   const cards = getAllCards();
@@ -13,58 +19,101 @@ export async function getStaticPaths() {
 }
 
 const { id } = Astro.params;
-let card = Astro.props.card;
-if (!card) card = getCardById(id!);
+let card = Astro.props.card ?? getCardById(id!);
+if (!card) throw new Error(`Card not found: ${id}`);
 
-if (!card) {
-  throw new Error(`Card not found: ${id}`);
+if (card.grade_overall == null) {
+  card.grade_overall = overallFromSubgrades(card.subgrades.front, card.subgrades.back, card.weights);
 }
 
-const site = Astro.site?.href ?? 'https://slabmetrics.com';
-const permalink = `${site}cards/${card.id}`;
-const qrDataUrl = await QRCode.toDataURL(permalink, { margin: 1, scale: 4 });
+const site = Astro.site?.href?.replace(/\/$/, '') ?? 'https://cards.slabmetrics.com';
+const og = makeOg(card, site);
+const jsonLd = productJsonLd(card, site);
 ---
 
-<CardLayout card={card} site={site}>
-  <header class="wrap">
-    <div class="hero">{card.player}</div>
-    <div class="sub">{card.set}{card.variant ? ` — ${card.variant}` : ''}{card.number ? ` · ${card.number}` : ''}</div>
-  </header>
-
-  <main class="wrap grid">
-    <section class="block">
-      <CardFlip front={card.images.front} back={card.images.back} client:load />
-      <div class="meta" style="margin-top:16px">
-        <span class="pill">ID: {card.id}</span>
-        <span class="pill">Grade: {card.grade}</span>
-        {card.graded_at && <span class="pill">Graded: {card.graded_at}</span>}
+<CardLayout title={og.title} desc={og.desc} jsonLd={jsonLd}>
+  <main class="wrap">
+    <section class="card">
+      <div class="h1">{card.player}</div>
+      <div class="muted">{card.set}{card.variant ? ` — ${card.variant}` : ''}{card.number ? ` · ${card.number}` : ''}</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px">
+        <span class="pill">Serial: <span style="font-weight:700; margin-left:6px">{card.serial}</span></span>
+        <span class="pill">Graded: {card.graded_at}</span>
+        <a class="pill" href={`/cards/${card.id}/`}>Permalink</a>
       </div>
     </section>
 
-    <aside class="block">
-      <GradeGauge value={card.grade} label="Overall" client:load />
-      {card.subgrades && <div style="margin-top:16px"><SubgradeBars subgrades={card.subgrades} client:visible /></div>}
-      {card.comp_trend && <div style="margin-top:16px"><TrendSpark values={card.comp_trend} label="Comp trend" client:load /></div>}
-    </aside>
-
-    <section class="block">
-      <h2 style="margin:0 0 8px 0">Notes</h2>
-      <p class="muted">{card.notes ?? '—'}</p>
-      <div class="kvs" style="margin-top:12px">
-        {card.pdf_report && <div><a href={card.pdf_report} target="_blank" rel="noopener">PDF Report</a></div>}
-      </div>
-    </section>
-
-    <section class="block">
-      <h2 style="margin:0 0 8px 0">Verification</h2>
-      <div class="qrwrap">
-        <img src={qrDataUrl} alt="QR code" width="120" height="120" style="border-radius:8px;border:1px solid rgb(0 0 0 / 10%)"/>
-        <div>
-          <div class="muted">Permalink</div>
-          <a href={permalink}>{permalink}</a>
-          <div style="margin-top:8px;font-size:12px;opacity:.8">Scan the QR on the slab to land here.</div>
+    <section class="grid" style="margin-top:16px">
+      <div class="card">
+        <CardFlip front={card.images.front} back={card.images.back} frontThumb={card.images.front_thumb} backThumb={card.images.back_thumb} client:load />
+        <div style="margin-top:12px">
+          <DownloadButtons id={card.id} front={card.images.front} back={card.images.back} client:load />
         </div>
+      </div>
+
+      <aside class="card" style="display:grid; gap:16px">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px">
+          <GradeGauge value={card.grade_overall} label="Overall" client:load />
+          <WeightNote front={card.weights.front} back={card.weights.back} client:load />
+        </div>
+        <div>
+          <h3 style="margin:10px 0 6px 0">Front (80%)</h3>
+          <div style="display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:12px; align-items:start">
+            <MiniDial value={card.subgrades.front.surface} label="Surface" client:visible />
+            <MiniDial value={card.subgrades.front.centering} label="Centering" client:visible />
+            <CornersGrid values={card.subgrades.front.corners} client:visible />
+            <EdgesCompass values={card.subgrades.front.edges} client:visible />
+          </div>
+          <RemarksReveal client:visible>
+            <div class="muted" style="margin-top:8px">
+              {card.subgrades.front.remarks.surface && <div><strong>Surface:</strong> {card.subgrades.front.remarks.surface}</div>}
+              {card.subgrades.front.remarks.centering && <div><strong>Centering:</strong> {card.subgrades.front.remarks.centering}</div>}
+              {card.subgrades.front.remarks.corners && <div><strong>Corners:</strong> {card.subgrades.front.remarks.corners}</div>}
+              {card.subgrades.front.remarks.edges && <div><strong>Edges:</strong> {card.subgrades.front.remarks.edges}</div>}
+            </div>
+          </RemarksReveal>
+        </div>
+
+        <div>
+          <h3 style="margin:10px 0 6px 0">Back (20%)</h3>
+          <div style="display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:12px; align-items:start">
+            <MiniDial value={card.subgrades.back.surface} label="Surface" client:visible />
+            <MiniDial value={card.subgrades.back.centering} label="Centering" client:visible />
+            <CornersGrid values={card.subgrades.back.corners} client:visible />
+            <EdgesCompass values={card.subgrades.back.edges} client:visible />
+          </div>
+          <RemarksReveal client:visible>
+            <div class="muted" style="margin-top:8px">
+              {card.subgrades.back.remarks.surface && <div><strong>Surface:</strong> {card.subgrades.back.remarks.surface}</div>}
+              {card.subgrades.back.remarks.centering && <div><strong>Centering:</strong> {card.subgrades.back.remarks.centering}</div>}
+              {card.subgrades.back.remarks.corners && <div><strong>Corners:</strong> {card.subgrades.back.remarks.corners}</div>}
+              {card.subgrades.back.remarks.edges && <div><strong>Edges:</strong> {card.subgrades.back.remarks.edges}</div>}
+            </div>
+          </RemarksReveal>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
+          {card.links?.ebay_comps && <a class="pill" href={card.links.ebay_comps} target="_blank" rel="noopener">View eBay comps →</a>}
+        </div>
+      </aside>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <h3 style="margin:0 0 10px 0">How this grade compares</h3>
+      <div style="color: var(--sm-green)">
+        <CompareBars distribution={card.compare?.distribution ?? {}} client:visible />
       </div>
     </section>
   </main>
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content={og.title} />
+  <meta property="og:description" content={og.desc} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={og.url} />
+  <meta property="og:image" content={og.img} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={og.title} />
+  <meta name="twitter:description" content={og.desc} />
+  <meta name="twitter:image" content={og.img} />
 </CardLayout>
