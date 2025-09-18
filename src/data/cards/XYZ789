@@ -1,15 +1,15 @@
 {
-  "id": "Tarik-Skubal-00001",
+  "id": "XYZ789",
   "serial": "SM-2025-000124",
-  "player": "Tarik Skubal",
+  "player": "Shohei Ohtani",
   "set": "2021 Topps Chrome",
   "number": "#150",
   "variant": "Refractor",
   "images": {
-    "front": "/public/IMG_0309.jpeg",
-    "back": "/public/IMG_0313.jpeg",
-    "front_thumb": "/public/IMG_0313.jpeg",
-    "back_thumb": "/public/IMG_0313.jpeg"
+    "front": "/cards/XYZ789-front.jpeg",
+    "back": "/cards/XYZ789-back.jpeg",
+    "front_thumb": "/cards/XYZ789-front-thumb.webp",
+    "back_thumb": "/cards/XYZ789-back-thumb.webp"
   },
   "graded_at": "2025-09-17",
   "weights": { "front": 0.8, "back": 0.2 },
