@@ -26,7 +26,7 @@ export default function CornersGrid({values}:{values:{tl:number;tr:number;bl:num
         </div>
       )}
       <style>{`
-        .corners-grid .dot{width:42px;height:42px;border-radius:999px;border:2px solid rgba(0,0,0,.12);position:relative;overflow:hidden}
+        .corners-grid .dot{width:48px;height:48px;border-radius:999px;border:2px solid rgba(0,0,0,.12);position:relative;overflow:hidden}
         .corners-grid .dot::after{content:''; position:absolute; inset:0; background:var(--sm-green); transform:scaleX(0); transform-origin:left}
         .corners-grid.on .dot[data-v]::after{ transform: scaleX(calc(attr(data-v number) / 10)); transition: transform .8s ease }
         .corners-grid .num{ position:absolute; inset:0; display:grid; place-items:center; font-size:12px; font-weight:700; color:var(--sm-black) }
