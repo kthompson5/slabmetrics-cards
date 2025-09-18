@@ -28,8 +28,20 @@ export default function EdgesCompass({values}:{values:{top:number;right:number;b
         </div>
       )}
       <style>{`
-        .edges .bar{height:8px;background:rgba(0,0,0,.08);border-radius:8px;overflow:hidden}
-        .edges .bar span{display:block;height:100%;width:0;background:var(--sm-green)}
+        .edges .bar{
+  height:8px;
+  background:rgba(0,0,0,.08);
+  border-radius:8px;
+  overflow:hidden;
+  width: 92%;          /* pull in from the edges */
+  margin: 0 auto;      /* center the bar */
+}
+.edges .bar span{
+  display:block;
+  height:100%;
+  width:0;
+  background:var(--sm-green);
+}
         .edges.on .bar[data-v] span{ width: calc((attr(data-v number) / 10) * 100%); transition: width .8s ease }
       `}</style>
     </div>
