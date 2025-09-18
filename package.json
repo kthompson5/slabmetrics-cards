@@ -1,16 +1,17 @@
 {
   "name": "slabmetrics-cards",
+  "version": "0.2.0",
   "private": true,
-  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "format": "prettier -w ."
+    "add:card": "node scripts/add-card.mjs",
+    "validate": "node scripts/validate.mjs"
   },
   "dependencies": {
-    "astro": "^4.10.0",
+    "astro": "^4.12.1",
     "chart.js": "^4.4.3",
     "qrcode": "^1.5.4",
     "react": "^18.3.1",
@@ -18,11 +19,13 @@
   },
   "devDependencies": {
     "@astrojs/react": "^4.1.0",
-    "@types/node": "^22.5.0",
+    "@types/node": "^22.7.4",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "prettier": "^3.3.3",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   }
 }
