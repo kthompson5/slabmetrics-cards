@@ -33,15 +33,19 @@ const jsonLd = productJsonLd(card, site);
 
 <CardLayout title={og.title} desc={og.desc} jsonLd={jsonLd}>
   <main class="wrap">
-    <section class="card">
-      <div class="h1">{card.player}</div>
-      <div class="muted">{card.set}{card.variant ? ` — ${card.variant}` : ''}{card.number ? ` · ${card.number}` : ''}</div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px">
-        <span class="pill">Serial: <span style="font-weight:700; margin-left:6px">{card.serial}</span></span>
-        <span class="pill">Graded: {card.graded_at}</span>
-        <a class="pill" href={`/cards/${card.id}/`}>Permalink</a>
-      </div>
-    </section>
+   <!-- Replace your current hero block -->
+<section class="card hero">
+  <div class="hero-title">
+    <span class="accent"></span>
+    <h1 class="h1">{card.player}</h1>
+  </div>
+  <div class="subline">{card.set}{card.variant ? ` — ${card.variant}` : ''}{card.number ? ` · ${card.number}` : ''}</div>
+  <div class="meta">
+    <span class="pill">Serial: <strong>{card.serial}</strong></span>
+    <span class="pill">Graded: {card.graded_at}</span>
+    <a class="pill" href={`/cards/${card.id}/`}>Permalink</a>
+  </div>
+</section>
 
     <section class="grid" style="margin-top:16px">
       <div class="card">
