@@ -3,7 +3,7 @@ import react from '@astrojs/react';
 
 export default defineConfig({
   output: 'static',
-  site: 'https://cards.slabmetrics.com', // or your actual domain
-  integrations: [react()],               // <-- THIS IS THE KEY LINE
+  site: 'https://cards.slabmetrics.com', // change if needed
+  integrations: [react()],
   build: { format: 'directory' }
 });
