@@ -6,8 +6,8 @@
   "number": "#150",
   "variant": "Refractor",
   "images": {
-    "front": "/public/XYZ789-front.JPEG",
-    "back": "/public/XYZ789-back.JPEG",
+    "front": "/public/XYZ789-front.jpeg",
+    "back": "/public/XYZ789-back.jpeg",
     "front_thumb": "/public/XYZ789-front-thumb.webp",
     "back_thumb": "/public/XYZ789-back-thumb.webp"
   },
