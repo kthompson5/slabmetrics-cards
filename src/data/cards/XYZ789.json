@@ -8,8 +8,8 @@
   "images": {
     "front": "/public/XYZ789-front.JPEG",
     "back": "/public/XYZ789-back.JPEG",
-    "front_thumb": "/cards/XYZ789-front-thumb.webp",
-    "back_thumb": "/cards/XYZ789-back-thumb.webp"
+    "front_thumb": "/public/XYZ789-front-thumb.webp",
+    "back_thumb": "/public/XYZ789-back-thumb.webp"
   },
   "graded_at": "2025-09-17",
   "weights": { "front": 0.8, "back": 0.2 },
