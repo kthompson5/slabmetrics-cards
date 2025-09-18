@@ -62,12 +62,16 @@ const jsonLd = productJsonLd(card, site);
         </div>
         <div>
           <h3 style="margin:10px 0 6px 0">Front (80%)</h3>
-          <div style="display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:12px; align-items:start">
-            <MiniDial value={card.subgrades.front.surface} label="Surface" client:visible />
-            <MiniDial value={card.subgrades.front.centering} label="Centering" client:visible />
-            <CornersGrid values={card.subgrades.front.corners} client:visible />
-            <EdgesCompass values={card.subgrades.front.edges} client:visible />
-          </div>
+          <div class="subgrid">
+  <MiniDial value={card.subgrades.front.surface} label="Surface" client:visible />
+  <MiniDial value={card.subgrades.front.centering} label="Centering" client:visible />
+  <div class="span-2">
+    <CornersGrid values={card.subgrades.front.corners} client:visible />
+  </div>
+  <div class="span-2">
+    <EdgesCompass values={card.subgrades.front.edges} client:visible />
+  </div>
+</div>
           <RemarksReveal client:visible>
             <div class="muted" style="margin-top:8px">
               {card.subgrades.front.remarks.surface && <div><strong>Surface:</strong> {card.subgrades.front.remarks.surface}</div>}
@@ -80,12 +84,15 @@ const jsonLd = productJsonLd(card, site);
 
         <div>
           <h3 style="margin:10px 0 6px 0">Back (20%)</h3>
-          <div style="display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:12px; align-items:start">
-            <MiniDial value={card.subgrades.back.surface} label="Surface" client:visible />
-            <MiniDial value={card.subgrades.back.centering} label="Centering" client:visible />
-            <CornersGrid values={card.subgrades.back.corners} client:visible />
-            <EdgesCompass values={card.subgrades.back.edges} client:visible />
-          </div>
+         <div class="subgrid">
+  <MiniDial value={card.subgrades.back.surface} label="Surface" client:visible />
+  <MiniDial value={card.subgrades.back.centering} label="Centering" client:visible />
+  <div class="span-2">
+    <CornersGrid values={card.subgrades.back.corners} client:visible />
+  </div>
+  <div class="span-2">
+    <EdgesCompass values={card.subgrades.back.edges} client:visible />
+  </div>
           <RemarksReveal client:visible>
             <div class="muted" style="margin-top:8px">
               {card.subgrades.back.remarks.surface && <div><strong>Surface:</strong> {card.subgrades.back.remarks.surface}</div>}
