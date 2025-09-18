@@ -1,18 +1,22 @@
 ---
-import { getAllCards } from "../utils/paths";
+import { getAllCards } from "../utils/paths.ts";
 const cards = getAllCards();
 ---
-
 <html lang="en">
-  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>SlabMetrics Cards</title></head>
-  <body style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin:0">
-    <main style="max-width:980px;margin:0 auto;padding:24px">
-      <h1>SlabMetrics Cards</h1>
-      <ul>
-        {cards.map(c => (
-          <li><a href={`/cards/${c.id}/`}>{c.player} — {c.set} (Grade {c.grade})</a></li>
-        ))}
-      </ul>
-    </main>
+  <head>
+    <meta charset="utf-8" />
+    <title>SlabMetrics Cards</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root{ --sm-green:#12B886 }
+      body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin:0; padding:20px }
+      a{ color: var(--sm-green) }
+    </style>
+  </head>
+  <body>
+    <h1>SlabMetrics Cards</h1>
+    <ul>
+      {cards.map(c => <li><a href={`/cards/${c.id}/`}>{c.player} — {c.set} (Grade {c.grade_overall ?? ''})</a></li>)}
+    </ul>
   </body>
 </html>
