@@ -33,6 +33,26 @@ const { title = "SlabMetrics", desc = "", jsonLd } = Astro.props;
 .subline{ font-size: clamp(14px, 1vw + 10px, 18px); opacity:.9; margin-top:6px }
 .meta{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px }  
 html, body { overflow-x: hidden; }
+.subgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;   /* 2-up on mobile */
+  gap: 14px;
+  justify-items: start;
+  align-items: start;
+}
+
+.subgrid .span-2 {
+  grid-column: 1 / -1;  /* corners & edges take full width on mobile */
+}
+
+@media (min-width: 980px) {
+  .subgrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4-up on desktop */
+  }
+  .subgrid .span-2 {
+    grid-column: auto; /* corners & edges act like normal tiles on desktop */
+  }
+}
 
     </style>
     {jsonLd && (<script type="application/ld+json">{JSON.stringify(jsonLd)}</script>)}
