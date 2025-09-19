@@ -5,6 +5,8 @@ import MiniDial from "../../components/MiniDial.tsx";
 import CornersGrid from "../../components/CornersGrid.tsx";
 import EdgesCompass from "../../components/EdgesCompass.tsx";
 import CardFlip from "../../components/CardFlip.tsx";
+import CardFlip from '@/components/CardFlip.astro';
+const { card } = Astro.props;
 import DownloadButtons from "../../components/DownloadButtons.tsx";
 import RemarksReveal from "../../components/RemarksReveal.tsx";
 import CompareBars from "../../components/CompareBars.tsx";
@@ -46,10 +48,7 @@ const jsonLd = productJsonLd(card, site);
     <a class="pill" href={`/cards/${card.id}/`}>Permalink</a>
   </div>
 </section>
----
-import CardFlip from '@/components/CardFlip.astro';
-const { card } = Astro.props;
----
+
     <section class="grid" style="margin-top:16px">
       <div class="card">
         <CardFlip front={card.images.front} back={card.images.back} frontThumb={card.images.front_thumb} backThumb={card.images.back_thumb} client:load />
