@@ -4,9 +4,8 @@ import GradeGauge from "../../components/GradeGauge.tsx";
 import MiniDial from "../../components/MiniDial.tsx";
 import CornersGrid from "../../components/CornersGrid.tsx";
 import EdgesCompass from "../../components/EdgesCompass.tsx";
-import CardFlip from "../../components/CardFlip.tsx";
-import CardFlip from "/components/CardFlip.astro";
-const { card } = Astro.props;
+// ⬇️ Use the Astro flip component (remove any TSX CardFlip import)
+import CardFlip from "@/components/CardFlip.astro";
 import DownloadButtons from "../../components/DownloadButtons.tsx";
 import RemarksReveal from "../../components/RemarksReveal.tsx";
 import CompareBars from "../../components/CompareBars.tsx";
@@ -20,6 +19,7 @@ export async function getStaticPaths() {
   return cards.map((c) => ({ params: { id: c.id }, props: { card: c } }));
 }
 
+// ⬇️ Do NOT destructure `card` above; define it once here
 const { id } = Astro.params;
 let card = Astro.props.card ?? getCardById(id!);
 if (!card) throw new Error(`Card not found: ${id}`);
@@ -28,64 +28,64 @@ if (card.grade_overall == null) {
   card.grade_overall = overallFromSubgrades(card.subgrades.front, card.subgrades.back, card.weights);
 }
 
-const site = Astro.site?.href?.replace(/\/$/, '') ?? 'https://cards.slabmetrics.com';
+const site = Astro.site?.href?.replace(/\/$/, "") ?? "https://cards.slabmetrics.com";
 const og = makeOg(card, site);
 const jsonLd = productJsonLd(card, site);
 ---
 
 <CardLayout title={og.title} desc={og.desc} jsonLd={jsonLd}>
   <main class="wrap">
-   <!-- Replace your current hero block -->
-<section class="card hero">
-  <div class="hero-title">
-    <span class="accent"></span>
-    <h1 class="h1">{card.player}</h1>
-  </div>
-  <div class="subline">{card.set}{card.variant ? ` — ${card.variant}` : ''}{card.number ? ` · ${card.number}` : ''}</div>
-  <div class="meta">
-    <span class="pill">Serial: <strong>{card.serial}</strong></span>
-    <span class="pill">Graded: {card.graded_at}</span>
-    <a class="pill" href={`/cards/${card.id}/`}>Permalink</a>
-  </div>
-</section>
-
-<CardFlip
-  front={card.images.front}
-  back={card.images.back}
-  altFront={`${card.player} front`}
-  altBack={`${card.player} back`}
-  client:load
-/>
-
-<div class="mt-3 flex gap-3">
-  <a class="btn" href={card.images.front} download>Download Front</a>
-  <a class="btn" href={card.images.back} download>Download Back</a>
-</div>
-    <section class="grid" style="margin-top:16px">
-      <div class="card">
-        <CardFlip front={card.images.front} back={card.images.back} frontThumb={card.images.front_thumb} backThumb={card.images.back_thumb} client:load />
-        <div style="margin-top:12px">
-          <DownloadButtons id={card.id} front={card.images.front} back={card.images.back} client:load />
-        </div>
+    <!-- HERO -->
+    <section class="card hero">
+      <div class="hero-title">
+        <span class="accent"></span>
+        <h1 class="h1">{card.player}</h1>
+      </div>
+      <div class="subline">
+        {card.set}{card.variant ? ` — ${card.variant}` : ""}{card.number ? ` · ${card.number}` : ""}
+      </div>
+      <div class="meta">
+        <span class="pill">Serial: <strong>{card.serial}</strong></span>
+        <span class="pill">Graded: {card.graded_at}</span>
+        <a class="pill" href={`/cards/${card.id}/`}>Permalink</a>
       </div>
 
+      <!-- Single, hydrated flip widget -->
+      <div style="margin-top:12px">
+        <CardFlip
+          front={card.images.front}
+          back={card.images.back}
+          altFront={`${card.player} front`}
+          altBack={`${card.player} back`}
+          client:load
+        />
+        <div class="mt-3 flex gap-3">
+          <a class="btn" href={card.images.front} download>Download Front</a>
+          <a class="btn" href={card.images.back} download>Download Back</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- GRID -->
+    <section class="grid" style="margin-top:16px">
       <aside class="card" style="display:grid; gap:16px">
         <div style="display:flex; align-items:center; justify-content:space-between; gap:12px">
           <GradeGauge value={card.grade_overall} label="Overall" client:load />
           <WeightNote front={card.weights.front} back={card.weights.back} client:load />
         </div>
+
         <div>
-          <h3 style="margin:10px 0 6px 0">Front (80%)</h3>
+          <h3 style="margin:10px 0 6px 0">Front ({Math.round(card.weights.front*100)}%)</h3>
           <div class="subgrid">
-  <MiniDial value={card.subgrades.front.surface} label="Surface" size={78} client:visible />
-<MiniDial value={card.subgrades.front.centering} label="Centering" size={78} client:visible />
-  <div class="span-2">
-    <CornersGrid values={card.subgrades.front.corners} client:visible />
-  </div>
-  <div class="span-2">
-    <EdgesCompass values={card.subgrades.front.edges} client:visible />
-  </div>
-</div>
+            <MiniDial value={card.subgrades.front.surface} label="Surface" size={78} client:visible />
+            <MiniDial value={card.subgrades.front.centering} label="Centering" size={78} client:visible />
+            <div class="span-2">
+              <CornersGrid values={card.subgrades.front.corners} client:visible />
+            </div>
+            <div class="span-2">
+              <EdgesCompass values={card.subgrades.front.edges} client:visible />
+            </div>
+          </div>
           <RemarksReveal client:visible>
             <div class="muted" style="margin-top:8px">
               {card.subgrades.front.remarks.surface && <div><strong>Surface:</strong> {card.subgrades.front.remarks.surface}</div>}
@@ -97,16 +97,17 @@ const jsonLd = productJsonLd(card, site);
         </div>
 
         <div>
-          <h3 style="margin:10px 0 6px 0">Back (20%)</h3>
-         <div class="subgrid">
-  <MiniDial value={card.subgrades.back.surface} label="Surface" size={78} client:visible />
-<MiniDial value={card.subgrades.back.centering} label="Centering" size={78} client:visible />
-  <div class="span-2">
-    <CornersGrid values={card.subgrades.back.corners} client:visible />
-  </div>
-  <div class="span-2">
-    <EdgesCompass values={card.subgrades.back.edges} client:visible />
-  </div>
+          <h3 style="margin:10px 0 6px 0">Back ({Math.round(card.weights.back*100)}%)</h3>
+          <div class="subgrid">
+            <MiniDial value={card.subgrades.back.surface} label="Surface" size={78} client:visible />
+            <MiniDial value={card.subgrades.back.centering} label="Centering" size={78} client:visible />
+            <div class="span-2">
+              <CornersGrid values={card.subgrades.back.corners} client:visible />
+            </div>
+            <div class="span-2">
+              <EdgesCompass values={card.subgrades.back.edges} client:visible />
+            </div>
+          </div>
           <RemarksReveal client:visible>
             <div class="muted" style="margin-top:8px">
               {card.subgrades.back.remarks.surface && <div><strong>Surface:</strong> {card.subgrades.back.remarks.surface}</div>}
