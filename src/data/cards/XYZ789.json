@@ -7,7 +7,7 @@
   "variant": "Refractor",
   "images": {
     "front": "/XYZ789-front.JPEG",
-    "back": "/XYZ789-back.JPEG",
+    "back": "/XYZ789-back.JPEG"
   },
   "graded_at": "2025-09-17",
   "weights": { "front": 0.8, "back": 0.2 },
