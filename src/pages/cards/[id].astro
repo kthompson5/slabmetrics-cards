@@ -46,7 +46,10 @@ const jsonLd = productJsonLd(card, site);
     <a class="pill" href={`/cards/${card.id}/`}>Permalink</a>
   </div>
 </section>
-
+---
+import CardFlip from '@/components/CardFlip.astro';
+const { card } = Astro.props;
+---
     <section class="grid" style="margin-top:16px">
       <div class="card">
         <CardFlip front={card.images.front} back={card.images.back} frontThumb={card.images.front_thumb} backThumb={card.images.back_thumb} client:load />
