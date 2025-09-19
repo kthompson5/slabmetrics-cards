@@ -1,0 +1,48 @@
+---
+const { front, back, altFront = 'Card front', altBack = 'Card back' } = Astro.props;
+---
+
+<style>
+  .flip-wrap { position: relative; width: 100%; aspect-ratio: 63 / 88; /* ~2.5x3.5 */ }
+  .flip-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; backface-visibility: hidden; transition: transform 0.35s ease; }
+  .back     { transform: rotateY(180deg); }
+  .flipped .front { transform: rotateY(180deg); }
+  .flipped .back  { transform: rotateY(360deg); }
+  .preserve-3d { transform-style: preserve-3d; perspective: 1000px; }
+</style>
+
+<div class="flip-wrap preserve-3d" data-cardflip>
+  <img class="flip-img front" src={front} alt={altFront} loading="lazy" />
+  <img class="flip-img back"  src={back}  alt={altBack}  loading="lazy" />
+</div>
+
+<script is:inline>
+  // Minimal flip + swipe
+  const root = document.currentScript.closest('[data-cardflip]');
+  let startX = null, flipped = false;
+
+  function setFlipped(v) {
+    flipped = v;
+    root.classList.toggle('flipped', flipped);
+  }
+
+  // Click / tap to flip
+  root.addEventListener('click', () => setFlipped(!flipped));
+
+  // Swipe to flip (threshold ~40px)
+  root.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+  root.addEventListener('touchend', (e) => {
+    if (startX == null) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) setFlipped(dx < 0 ? true : false); // left=back, right=front
+    startX = null;
+  }, { passive: true });
+
+  // Keyboard access
+  root.tabIndex = 0;
+  root.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFlipped(!flipped); }
+    if (e.key === 'ArrowLeft') setFlipped(true);
+    if (e.key === 'ArrowRight') setFlipped(false);
+  });
+</script>
